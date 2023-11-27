@@ -4,7 +4,8 @@ AWS lambda for API Gateway talk in Pydelhi Meetup
 # Pre-requsite
 1. Configure AWS credentials in your system.
 2. Install AWSume for easy access to your profile
-3. Install Nodejs 20.X
+3. Install nodeJS 20.X
+4. Install Python 3.10.X
 
 ## How to run the setup
 
@@ -30,8 +31,12 @@ cd scripts
 python create_table.py
 python create_table_entries.py
 ```
-6. Deploy the serverless app from the root directory
+6. Install the package dependencies
 ```bash
 cd ..
+npm install
+```
+7. Deploy the serverless app from the root directory
+```bash
 serverless deploy
 ```
