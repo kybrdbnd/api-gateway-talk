@@ -21,7 +21,7 @@ class APIGatewayDemo:
             Limit=100,
             Select="SPECIFIC_ATTRIBUTES",
             ProjectionExpression="id,#n",
-            ExpressionAttributeNames={"#n": "name"}
+            ExpressionAttributeNames={"#n": "name"},
         )
         return response
 
