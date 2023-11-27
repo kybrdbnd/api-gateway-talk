@@ -69,7 +69,7 @@ functions:
     events:
       - httpApi:
           method: POST
-          path: /save-repositories
+          path: /repositories
           authorizer:
             name: customAuthorizer
   getGitHubRepositories:
@@ -81,9 +81,19 @@ functions:
     events:
       - httpApi:
           method: GET
-          path: /get-repositories
+          path: /repositories
           authorizer:
             name: customAuthorizer
+    getGitHubRepository:
+      handler: lambda_function.lambda_handler
+      name: get-github-repository
+      module: get_github_repository
+      events:
+        - httpApi:
+            method: GET
+            path: /repositories/{id}
+            authorizer:
+              name: customAuthorizer
   authorizerFunc:
     handler: lambda_function.lambda_handler
     name: lambda-authorizer

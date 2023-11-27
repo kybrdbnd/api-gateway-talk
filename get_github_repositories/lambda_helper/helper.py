@@ -17,21 +17,16 @@ class APIGatewayDemo:
     def get_github_repos_from_db(self):
         logger.info("fetching data from dynamoDB")
         response = dynamodb_client.scan(
-            TableName=DYNAMODB_TABLE_NAME, Limit=100, Select="ALL_ATTRIBUTES"
+            TableName=DYNAMODB_TABLE_NAME,
+            Limit=100,
+            Select="SPECIFIC_ATTRIBUTES",
+            ProjectionExpression="id,name",
         )
         return response
 
     def get_formatted_repos_from_db(self):
         logger.info("formatting data from dynamoDB")
         return [
-            {
-                "id": item["id"]["N"],
-                "name": item["name"]["S"],
-                "description": item["description"]["S"],
-                "archived": item["archived"]["BOOL"],
-                "created_at": item["created_at"]["S"],
-                "stars": item["stars"]["N"],
-                "updated_at": item["updated_at"]["S"],
-            }
+            {"id": item["id"]["N"], "name": item["name"]["S"]}
             for item in self.get_github_repos_from_db()["Items"]
         ]
