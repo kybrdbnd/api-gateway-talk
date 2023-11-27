@@ -1,5 +1,9 @@
+import logging
 import os
+
 import boto3
+
+logger = logging.getLogger()
 
 DYNAMODB_TABLE_NAME = os.getenv("DYNAMODB_TABLE_NAME")
 
@@ -11,12 +15,14 @@ class APIGatewayDemo:
         pass
 
     def get_github_repos_from_db(self):
+        logger.info("fetching data from dynamoDB")
         response = dynamodb_client.scan(
             TableName=DYNAMODB_TABLE_NAME, Limit=100, Select="ALL_ATTRIBUTES"
         )
         return response
 
     def get_formatted_repos_from_db(self):
+        logger.info("formatting data from dynamoDB")
         return [
             {
                 "id": item["id"]["N"],

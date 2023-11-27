@@ -1,6 +1,10 @@
-from github import Github, Auth
+import logging
 import os
+
 import boto3
+from github import Auth, Github
+
+logger = logging.getLogger()
 
 GITHUB_ACCESS_TOKEN = os.getenv("GITHUB_ACCESS_TOKEN")
 DYNAMODB_TABLE_NAME = os.getenv("DYNAMODB_TABLE_NAME")
@@ -12,9 +16,11 @@ class GitHubAuth:
     def __init__(self):
         auth = Auth.Token(GITHUB_ACCESS_TOKEN)
         self.g = Github(auth=auth)
+        logger.info("making connection to github")
 
     def close_connection(self):
         self.g.close()
+        logger.info("closing connection to github")
 
 
 class APIGatewayDemo(GitHubAuth):
@@ -22,9 +28,11 @@ class APIGatewayDemo(GitHubAuth):
         super().__init__()
 
     def get_github_repos(self):
+        logger.info("getting github repositories")
         return self.g.get_user().get_repos()
 
     def get_formatted_repos(self) -> list[dict]:
+        logger.info("formatting repositories")
         return [
             {
                 "name": repo.name,
@@ -40,6 +48,7 @@ class APIGatewayDemo(GitHubAuth):
 
     def format_data_for_dynamodb(self, repos: list[dict]) -> list[dict]:
         dynamo_db_data = []
+        logger.info("preparing data for dynamoDB")
         for repo in repos:
             dynamo_db_data.append(
                 {
@@ -57,6 +66,7 @@ class APIGatewayDemo(GitHubAuth):
     def write_to_dynamodb(self, repos: list[dict]):
         for item in repos:
             try:
+                logger.info(f"putting repo: {item['name']}")
                 dynamodb_client.put_item(TableName=DYNAMODB_TABLE_NAME, Item=item)
-            except Exception as e:
-                print(e)
+            except Exception as err:
+                logger.error(err)
