@@ -20,7 +20,8 @@ class APIGatewayDemo:
             TableName=DYNAMODB_TABLE_NAME,
             Limit=100,
             Select="SPECIFIC_ATTRIBUTES",
-            ProjectionExpression="id,name",
+            ProjectionExpression="id,#n",
+            ExpressionAttributeNames={"#n": "name"}
         )
         return response
 
