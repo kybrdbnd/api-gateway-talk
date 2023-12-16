@@ -1,5 +1,5 @@
 import os
-
+import json
 import boto3
 
 dynamodb_client = boto3.client("dynamodb")
@@ -19,7 +19,10 @@ def lambda_handler(event, context):
     repo_id = path_params.get("id", None)
     repo = get_github_repo(repo_id)
     if repo_id is None:
-        return {"message": "repo id is required"}
+        return {
+            "statusCode": 401,
+            "body": json.dumps({"message": "repo id is required"})
+        }
     if repo:
         return {
             "id": repo["id"]["N"],
@@ -31,4 +34,7 @@ def lambda_handler(event, context):
             "updated_at": repo["updated_at"]["S"],
         }
     else:
-        return {"message": "repo not found"}
+        return {
+            "statusCode": 404,
+            "body": json.dumps({"message": "repo not found"}),
+        }
